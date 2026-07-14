@@ -1,4 +1,4 @@
-# Asumi's cpp cheatsheet
+# cpp cheatsheet
 
 ### general
 
