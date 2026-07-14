@@ -12,3 +12,6 @@
 #### Programming notes:
 
 [2227D](/2227D.md)
+
+#### C++ Syntax Cheatsheet
+[Cheatsheet](/cppcheat.md)
