@@ -10,4 +10,4 @@
 
 ` vector<int> test(n, a) `
 
-` sort(a.begin(), a.end(), greater()) `
+` sort(a.begin(), a.end(), greater<int>()) `
