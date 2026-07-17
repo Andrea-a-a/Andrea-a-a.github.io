@@ -13,5 +13,9 @@
 
 [2227D](/2227D.md)
 
+[2244C](/2244C.md)
+[2244D](/2244D.md)
+[2244E](/2244E.md)
+
 #### C++ Syntax Cheatsheet
 [Cheatsheet](/cppcheat.md)
