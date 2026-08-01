@@ -21,6 +21,9 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
+      - name: Generate homepage from markdown
+        run: python3 generate.py
+
       - name: Publish to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
