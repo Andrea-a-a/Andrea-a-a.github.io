@@ -1,4 +1,4 @@
-### Asumi's blog...
+﻿### Asumi's blog...
 
 #### Latest dairy:
 
@@ -19,3 +19,4 @@
 
 #### C++ Syntax Cheatsheet
 [Cheatsheet](/cppcheat.md)
+
