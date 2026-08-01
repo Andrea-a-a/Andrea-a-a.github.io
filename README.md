@@ -11,11 +11,11 @@
 
 #### Programming notes:
 
-[2227D](/2227D.md)
+[2227D](/problems/2227D.md)
 
-[2244C](/2244C.md)
-[2244D](/2244D.md)
-[2244E](/2244E.md)
+[2244C](/problems/2244C.md)
+[2244D](/problems/2244D.md)
+[2244E](/problems/2244E.md)
 
 #### C++ Syntax Cheatsheet
 [Cheatsheet](/cppcheat.md)
