@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Regenerate the homepage (index.html) from the markdown content folders.
+"""Regenerate the site from the markdown content folders.
 
-Scans diary/, problems/ and misc/, then fills templates/home-template.html
-with the latest diary entry, Codeforces problem links grouped by contest,
-and misc notes.
+- index.html          <- filled from templates/home-template.html
+- problems/*.html     <- filled from templates/problem-template.html
+- misc/*.html         <- filled from templates/misc-template.html
+
+All files are read and written as UTF-8 (with a BOM so VS Code and other
+editors always detect the encoding correctly).
 
 Usage:
     python generate.py
@@ -18,6 +21,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 TEMPLATE = ROOT / "templates" / "home-template.html"
+PROBLEM_TEMPLATE = ROOT / "templates" / "problem-template.html"
+MISC_TEMPLATE = ROOT / "templates" / "misc-template.html"
 OUTPUT = ROOT / "index.html"
 
 DIARY_DIR = ROOT / "diary"
@@ -51,6 +56,68 @@ def first_heading(text):
     return match.group(1).strip() if match else None
 
 
+def write_utf8_bom(path, text):
+    """Write text as UTF-8 with a BOM so editors detect the encoding."""
+    path.write_bytes(b"\xef\xbb\xbf" + text.encode("utf-8"))
+
+
+# ---------------------------------------------------------------------------
+# Tiny markdown -> HTML converter (enough for the notes in this site)
+# ---------------------------------------------------------------------------
+
+def md_inline(text):
+    """Convert inline markdown (code, links, bold, italic) to HTML."""
+    text = html.escape(text)
+    text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
+    text = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2">\1</a>', text)
+    text = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", text)
+    text = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", text)
+    return text
+
+
+def md_block_to_html(body):
+    """Convert a markdown body (headings + paragraphs) to HTML blocks."""
+    lines = body.splitlines()
+    out = []
+    para = []
+
+    def flush():
+        if para:
+            out.append("<p>{}</p>".format(" ".join(md_inline(line) for line in para)))
+            para.clear()
+
+    for line in lines:
+        match = re.match(r"^(#{1,6})\s+(.*)$", line)
+        if match:
+            flush()
+            level = len(match.group(1))
+            out.append("<h{0}>{1}</h{0}>".format(level, md_inline(match.group(2))))
+        elif not line.strip():
+            flush()
+        else:
+            para.append(line.strip())
+    flush()
+    return "\n".join(out)
+
+
+def extract_title_contest(body):
+    """Pull the first '# ' (title) and first '## ' (contest) heading out of a body."""
+    title = None
+    contest = None
+    remaining = []
+    for line in body.splitlines():
+        m1 = re.match(r"^#\s+(.*)$", line)
+        m2 = re.match(r"^##\s+(.*)$", line)
+        if m1 and title is None:
+            title = m1.group(1).strip()
+            continue
+        if m2 and contest is None:
+            contest = m2.group(1).strip()
+            continue
+        remaining.append(line)
+    return title, contest, "\n".join(remaining)
+
+
 # ---------------------------------------------------------------------------
 # Diary
 # ---------------------------------------------------------------------------
@@ -58,7 +125,7 @@ def first_heading(text):
 def collect_diary():
     entries = []
     for path in sorted(DIARY_DIR.glob("*.md")):
-        text = path.read_text(encoding="utf-8")
+        text = path.read_text(encoding="utf-8-sig")
         meta, body = parse_front_matter(text)
         date = meta.get("date", path.stem)
         entries.append({"path": path, "meta": meta, "body": body, "date": date})
@@ -114,7 +181,7 @@ def render_problems(groups):
     rows = []
     for contest, letters in groups.items():
         links = "".join(
-            '<a href="/problems/{}{}.md">{}</a>'.format(contest, letter, letter)
+            '<a href="/problems/{}{}.html">{}</a>'.format(contest, letter, letter)
             for letter in letters
         )
         rows.append(
@@ -147,7 +214,7 @@ def collect_misc():
         if path.suffix in IGNORED_SUFFIXES or not path.is_file():
             continue
         if path.suffix == ".md":
-            heading = first_heading(path.read_text(encoding="utf-8"))
+            heading = first_heading(path.read_text(encoding="utf-8-sig"))
             label = heading if heading else path.stem
         else:
             label = path.name
@@ -159,7 +226,7 @@ def render_misc(items):
     rows = []
     for item in items:
         label = html.escape(item["label"])
-        href = "/misc/{}".format(item["path"].name)
+        href = "/misc/{}.html".format(item["path"].stem)
         rows.append(
             "            <div class=\"contest\">\n"
             "              <div class=\"contest-row\">\n"
@@ -181,6 +248,67 @@ def render_misc(items):
 
 
 # ---------------------------------------------------------------------------
+# Problem / misc pages
+# ---------------------------------------------------------------------------
+
+def render_problem_page(path):
+    text = path.read_text(encoding="utf-8-sig")
+    meta, body = parse_front_matter(text)
+    if meta:
+        title = meta.get("title", path.stem)
+        contest = meta.get("contest", "")
+        difficulty = meta.get("difficulty", "")
+        tags = meta.get("tags", "")
+    else:
+        title, contest, body = extract_title_contest(body)
+        if title is None:
+            title = path.stem
+        difficulty = ""
+        tags = ""
+
+    content = md_block_to_html(body)
+    meta_line = " \u00b7 ".join(p for p in (contest, difficulty, tags) if p)
+
+    page = (
+        PROBLEM_TEMPLATE.read_text(encoding="utf-8-sig")
+        .replace("{{title}}", html.escape(title))
+        .replace("{{contest}} \u00b7 {{difficulty}} \u00b7 {{tags}}", html.escape(meta_line))
+        .replace("{{content}}", content)
+    )
+    out = path.with_suffix(".html")
+    write_utf8_bom(out, page)
+    return out
+
+
+def render_misc_page(path):
+    text = path.read_text(encoding="utf-8-sig")
+    meta, body = parse_front_matter(text)
+    if meta:
+        title = meta.get("title", path.stem)
+        date = meta.get("date", "")
+        tags = meta.get("tags", "")
+    else:
+        title, _, body = extract_title_contest(body)
+        if title is None:
+            title = path.stem
+        date = ""
+        tags = ""
+
+    content = md_block_to_html(body)
+    meta_line = " \u00b7 ".join(p for p in (date, tags) if p)
+
+    page = (
+        MISC_TEMPLATE.read_text(encoding="utf-8-sig")
+        .replace("{{title}}", html.escape(title))
+        .replace("{{date}} \u00b7 {{tags}}", html.escape(meta_line))
+        .replace("{{content}}", content)
+    )
+    out = path.with_suffix(".html")
+    write_utf8_bom(out, page)
+    return out
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -189,7 +317,7 @@ def main():
     problems = render_problems(collect_problems())
     misc = render_misc(collect_misc())
 
-    template = TEMPLATE.read_text(encoding="utf-8")
+    template = TEMPLATE.read_text(encoding="utf-8-sig")
     page = (
         template.replace("{{diary_date}}", diary["date"])
         .replace("{{diary_body}}", diary["body"].rstrip("\n"))
@@ -197,9 +325,14 @@ def main():
         .replace("{{cf_sections}}", problems.rstrip("\n"))
         .replace("{{misc_sections}}", misc.rstrip("\n"))
     )
-
-    OUTPUT.write_text(page, encoding="utf-8")
+    write_utf8_bom(OUTPUT, page)
     print("Wrote {}".format(OUTPUT))
+
+    for path in sorted(PROBLEMS_DIR.glob("*.md")):
+        print("Wrote {}".format(render_problem_page(path)))
+
+    for path in sorted(MISC_DIR.glob("*.md")):
+        print("Wrote {}".format(render_misc_page(path)))
 
 
 if __name__ == "__main__":
