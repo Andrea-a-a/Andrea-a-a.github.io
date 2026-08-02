@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{title}} - Misc Note</title>
+    <title>CF2244 C. Stepan and Permutation - Problem Note</title>
     <style>
       :root {
         --bg: #ffffff;
-        --line: #b9e3c0;
-        --text: #1e2720;
-        --muted: #5e6a62;
-        --accent: #2d6a4f;
+        --line: #9ec9ff;
+        --text: #17253d;
+        --muted: #5e6a82;
+        --accent: #2457d6;
       }
 
       * {
@@ -86,12 +86,13 @@
   <body>
     <main class="page">
       <header class="masthead">
-        <p class="eyebrow">Misc note</p>
-        <h1>{{title}}</h1>
-        <span class="meta">{{date}} · {{tags}}</span>
+        <p class="eyebrow">Problem note</p>
+        <h1>CF2244 C. Stepan and Permutation</h1>
+        <span class="meta">Codeforces Round 1109 (Div. 3)</span>
       </header>
       <section class="content">
-        {{content}}
+        <p><a href="https://codeforces.com/contest/2244/problem/C">传送门</a></p>
+<p>发现在x和y互质的时候，所有的元素都可以随意交换；那在不互质的时候，所有数字被分为gcd(x, y)组，根据模gcd的不同来决定分在哪组。由于输入已经是排列，对于每一个元素，按照其下标的余数判断一下是否在它是不是在该在的那个组即可。</p>
       </section>
       <footer class="footer">
         Back to <a href="/index.html">home</a>.
