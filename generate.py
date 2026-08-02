@@ -136,7 +136,7 @@ def collect_diary():
 
 def render_diary(entries):
     if not entries:
-        return {"date": "", "body": "          <p>No diary entries yet.</p>\n", "older": ""}
+        return {"date": "", "body": "          <p>No diary entries yet.</p>\n"}
 
     latest = entries[0]
     date = html.escape(latest["date"])
@@ -145,17 +145,7 @@ def render_diary(entries):
     excerpt = lines[:MAX_DIARY_LINES]
     paras = "".join("          <p>{}</p>\n".format(html.escape(line)) for line in excerpt)
 
-    older = ""
-    if len(entries) > 1:
-        links = ", ".join(
-            '<a href="/diary/{}">{}</a>'.format(
-                e["path"].name, html.escape(e["meta"].get("title", e["path"].stem))
-            )
-            for e in entries[1:]
-        )
-        older = '        <p class="diary-older">Older: {}</p>\n'.format(links)
-
-    return {"date": date, "body": paras, "older": older}
+    return {"date": date, "body": paras}
 
 
 # ---------------------------------------------------------------------------
@@ -321,7 +311,6 @@ def main():
     page = (
         template.replace("{{diary_date}}", diary["date"])
         .replace("{{diary_body}}", diary["body"].rstrip("\n"))
-        .replace("{{diary_older}}", diary["older"].rstrip("\n"))
         .replace("{{cf_sections}}", problems.rstrip("\n"))
         .replace("{{misc_sections}}", misc.rstrip("\n"))
     )
