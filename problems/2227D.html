@@ -1,0 +1,102 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2227D - Problem Note</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --line: #9ec9ff;
+        --text: #17253d;
+        --muted: #5e6a82;
+        --accent: #2457d6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .page {
+        width: min(920px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 24px 0 48px;
+      }
+
+      .masthead {
+        padding: 6px 0 18px;
+        border-bottom: 2px solid var(--accent);
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        font-size: 0.9rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.1;
+      }
+
+      .meta {
+        color: var(--muted);
+        display: block;
+        margin-top: 10px;
+      }
+
+      .content {
+        padding: 18px 0 20px;
+        line-height: 1.75;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .content > * + * {
+        margin-top: 1rem;
+      }
+
+      .footer {
+        padding: 14px 0 0;
+        color: var(--muted);
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          width: min(100% - 20px, 920px);
+          padding-top: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="masthead">
+        <p class="eyebrow">Problem note</p>
+        <h1>2227D</h1>
+        <span class="meta">Codeforces Round 1096 (Div. 3)  D. Palindromex</span>
+      </header>
+      <section class="content">
+        <p><a href="https://codeforces.com/contest/2227/problem/D">Problem:</a></p>
+<p>對於我們目前正在考慮的回文串，這個串總是越長越好；我們考慮尋找有0的串，然後比較它們的mex值。如何尋找有0的串？可能性有3種：第一個0作為串的中心，第二個0作為串的中心，或者兩個在一個回文串中處於對稱的位置。</p>
+      </section>
+      <footer class="footer">
+        Back to <a href="/index.html">home</a>.
+      </footer>
+    </main>
+  </body>
+</html>

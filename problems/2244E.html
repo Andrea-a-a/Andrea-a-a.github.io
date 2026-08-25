@@ -1,0 +1,102 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2244E E. Masha and the Garland - Problem Note</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --line: #9ec9ff;
+        --text: #17253d;
+        --muted: #5e6a82;
+        --accent: #2457d6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .page {
+        width: min(920px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 24px 0 48px;
+      }
+
+      .masthead {
+        padding: 6px 0 18px;
+        border-bottom: 2px solid var(--accent);
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        font-size: 0.9rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.1;
+      }
+
+      .meta {
+        color: var(--muted);
+        display: block;
+        margin-top: 10px;
+      }
+
+      .content {
+        padding: 18px 0 20px;
+        line-height: 1.75;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .content > * + * {
+        margin-top: 1rem;
+      }
+
+      .footer {
+        padding: 14px 0 0;
+        color: var(--muted);
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          width: min(100% - 20px, 920px);
+          padding-top: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="masthead">
+        <p class="eyebrow">Problem note</p>
+        <h1>2244E E. Masha and the Garland</h1>
+        <span class="meta">Codeforces Round 1109 (Div. 3)</span>
+      </header>
+      <section class="content">
+        <p><a href="https://codeforces.com/contest/2244/problem/E">传送门</a></p>
+<p>一开始还以为是左右翻转……实际上并不是！ 在这种翻转模式下，以1开头和以0开头的美丽串都是可以实现的，所以标记一下与目标串不同的部分，使原串被分为k段，其中两种类型的段数量大约是一半一半，选一个少的进行反转。</p>
+      </section>
+      <footer class="footer">
+        Back to <a href="/index.html">home</a>.
+      </footer>
+    </main>
+  </body>
+</html>

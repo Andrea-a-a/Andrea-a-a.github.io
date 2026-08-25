@@ -18,4 +18,4 @@
 [2244E](/problems/2244E.md)
 
 #### C++ Syntax Cheatsheet
-[Cheatsheet](/cppcheat.md)
+[Cheatsheet](/misc/cppcheat.md)
